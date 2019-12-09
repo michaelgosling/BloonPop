@@ -1,20 +1,20 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using System;
 using Microsoft.Xna.Framework.Input;
 
 namespace BloonPop {
     class Stage : IScreen {
         /** Fields */
-        private List<Balloon> lvlBalloons =  new List<Balloon>();
+        private List<Balloon> lvlBalloons = new List<Balloon>();
         private Texture2D[] balloonSprites;
         private Texture2D borderBrush;
         private Balloon currentBalloon, nextBalloon;
         private Rectangle balloonDimens;
         private Cannon player;
         private ScoreKeeper scoreKeeper;
-        private Vector2 scoreTextPos = new Vector2(10,10);
+        private Vector2 scoreTextPos = new Vector2(10, 10);
         private SpriteFont font;
         private Random rand = new Random();
         private Game1 game;
@@ -31,7 +31,7 @@ namespace BloonPop {
         /// <param name="player">Player cannon</param>
         /// <param name="game">Reference to Game</param>
         public Stage(Level level, Texture2D[] balloonSprites, Texture2D borderBrush,
-                     SpriteFont font, ScoreKeeper scoreKeeper, Cannon player, Game1 game){
+            SpriteFont font, ScoreKeeper scoreKeeper, Cannon player, Game1 game) {
             this.player = player;
             this.balloonSprites = balloonSprites;
             this.borderBrush = borderBrush;
@@ -50,7 +50,7 @@ namespace BloonPop {
         /// <summary>
         /// Loads the stage, depending on the current level
         /// </summary>
-        private void LoadStage(Level level){
+        private void LoadStage(Level level) {
             // clear the balloons from the previous level
             lvlBalloons.Clear();
             currentBalloon = null;
@@ -62,15 +62,15 @@ namespace BloonPop {
             int yOffset = 1;
             int row = 0;
             BalloonColor[] newBalloons = GetStageBalloons(level);
-            foreach (var color in newBalloons){
+            foreach (var color in newBalloons) {
                 // create new balloon using current x and y offsets, and the color
                 Balloon balloon = CreateBalloon(color, xOffset, yOffset);
-                if (balloon.BoundingBox.Right - 1 >= Constants.PLAY_AREA.Right){
+                if (balloon.BoundingBox.Right - 1 >= Constants.PLAY_AREA.Right) {
                     // new row
                     row++;
                     // set x offset appropriate for row
-                    xOffset = Constants.PLAY_AREA.Left ;
-                    if (row % 2 != 0) xOffset += balloon.BoundingBox.Width/2;
+                    xOffset = Constants.PLAY_AREA.Left;
+                    if (row % 2 != 0) xOffset += balloon.BoundingBox.Width / 2;
                     // shift y offset to bubble height + old offset
                     yOffset += balloon.BoundingBox.Height - 1;
                     // assign balloon to new offset
@@ -89,36 +89,36 @@ namespace BloonPop {
         /// <summary>
         /// Find every balloon that intersects another and determine if they're matching
         /// </summary>
-        private void UpdateMatches(){
-            foreach (Balloon bln in lvlBalloons){
-                foreach(Balloon bln2 in lvlBalloons){
-                    if (bln.BlnColor == bln2.BlnColor){
+        private void UpdateMatches() {
+            foreach (Balloon bln in lvlBalloons) {
+                foreach (Balloon bln2 in lvlBalloons) {
+                    if (bln.BlnColor == bln2.BlnColor) {
                         if (bln.BoundingBox.Intersects(bln2.BoundingBox))
                             bln.AddToMatched(bln2.ID);
                     }
                 }
             }
 
-            foreach(Balloon balloon in lvlBalloons){
-                if (balloon.MatchedIDs.Count >= 3){
+            foreach (Balloon balloon in lvlBalloons) {
+                if (balloon.MatchedIDs.Count >= 3) {
                     bool idAdded = false;
                     List<int> allMatchedIDs = new List<int>();
-                    foreach(int i in balloon.MatchedIDs)
+                    foreach (int i in balloon.MatchedIDs)
                         allMatchedIDs.Add(i);
                     allMatchedIDs.Add(balloon.ID);
                     do {
                         idAdded = false;
-                        for (int i = allMatchedIDs.Count-1; i >= 0; i--){
+                        for (int i = allMatchedIDs.Count - 1; i >= 0; i--) {
                             var nextMatch = lvlBalloons.Find((Balloon bln) => bln.ID == allMatchedIDs[i]);
-                            foreach (int j in nextMatch.MatchedIDs){
-                                if (!allMatchedIDs.Contains(j)){
+                            foreach (int j in nextMatch.MatchedIDs) {
+                                if (!allMatchedIDs.Contains(j)) {
                                     allMatchedIDs.Add(j);
                                     idAdded = true;
                                 }
                             }
                         }
                     } while (idAdded);
-                    foreach (int id in allMatchedIDs){
+                    foreach (int id in allMatchedIDs) {
                         Balloon blnToCheck = lvlBalloons.Find((Balloon bln) => bln.ID == id);
                         if (blnToCheck.MatchedIDs.Count >= 2) blnToCheck.Matched = true;
                     }
@@ -129,16 +129,16 @@ namespace BloonPop {
         /// <summary>
         /// Find matched balloons, increment score, and remove the balloons
         /// </summary>
-        private void CleanUpMatches(){
+        private void CleanUpMatches() {
             int color1Matched = 0;
             int color2Matched = 0;
             int color3Matched = 0;
             int color4Matched = 0;
             int color5Matched = 0;
             int color6Matched = 0;
-            foreach (Balloon bln in lvlBalloons){
-                if (bln.Matched){
-                    switch (bln.BlnColor){
+            foreach (Balloon bln in lvlBalloons) {
+                if (bln.Matched) {
+                    switch (bln.BlnColor) {
                         case BalloonColor.Color1:
                             color1Matched++;
                             break;
@@ -169,11 +169,11 @@ namespace BloonPop {
             if (color4Matched > 0) scoreKeeper.IncrementScore(color4Matched);
             if (color5Matched > 0) scoreKeeper.IncrementScore(color5Matched);
             if (color6Matched > 0) scoreKeeper.IncrementScore(color6Matched);
-            
+
             // List<int> fallChain = new List<int>();
-            for (int i = lvlBalloons.Count -1; i >= 0; i--){
-                Balloon bln = lvlBalloons.ToArray()[i];
-                if (bln.Matched){
+            for (int i = lvlBalloons.Count - 1; i >= 0; i--) {
+                Balloon bln = lvlBalloons.ToArray() [i];
+                if (bln.Matched) {
                     // before we remove the balloon, if there's a balloon attached below it
                     // add it to the fall chain
                     // while (GetBalloonBelow(bln) != null){
@@ -189,7 +189,7 @@ namespace BloonPop {
 
             // for (int i = fallChain.Count - 1; i >= 0; i--)
             //     lvlBalloons.Find((Balloon bln) => bln.ID == fallChain[i]).Fall();
-            }
+        }
 
         // private Balloon GetBalloonBelow(Balloon bln){
         //     foreach (Balloon bln2 in lvlBalloons){
@@ -211,24 +211,23 @@ namespace BloonPop {
         /// <param name="rectangleToDraw">Rectangle to border</param>
         /// <param name="thicknessOfBorder">Thickness of border</param>
         /// <param name="borderColor">Color of border</param>
-         private void DrawBorder(SpriteBatch spriteBatch, Rectangle rectangleToDraw, int thicknessOfBorder, Color borderColor)
-        {
+        private void DrawBorder(SpriteBatch spriteBatch, Rectangle rectangleToDraw, int thicknessOfBorder, Color borderColor) {
             // Draw top line
             spriteBatch.Draw(borderBrush, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), borderColor);
-            
+
             // Draw left line
             spriteBatch.Draw(borderBrush, new Rectangle(rectangleToDraw.X - 1, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), borderColor);
 
             // Draw right line
             spriteBatch.Draw(borderBrush, new Rectangle((rectangleToDraw.X + rectangleToDraw.Width + 1),
-                                            rectangleToDraw.Y,
-                                            thicknessOfBorder,
-                                            rectangleToDraw.Height), borderColor);
+                rectangleToDraw.Y,
+                thicknessOfBorder,
+                rectangleToDraw.Height), borderColor);
             // Draw bottom line
             spriteBatch.Draw(borderBrush, new Rectangle(rectangleToDraw.X,
-                                            rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder,
-                                            rectangleToDraw.Width,
-                                            thicknessOfBorder), borderColor);
+                rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder,
+                rectangleToDraw.Width,
+                thicknessOfBorder), borderColor);
         }
 
         /// <summary>
@@ -236,14 +235,14 @@ namespace BloonPop {
         /// </summary>
         /// <param name="lvl">Integer representing level</param>
         /// <returns>BalloonColor array</returns>
-        BalloonColor[] GetStageBalloons(Level lvl){
+        BalloonColor[] GetStageBalloons(Level lvl) {
             BalloonColor[] balloons;
-            switch(lvl){
+            switch (lvl) {
                 case Level.First:
                     balloons = Constants.LEVEL1_BALLOONS;
                     break;
                 default:
-                    balloons = new BalloonColor[] {};
+                    balloons = new BalloonColor[] { };
                     break;
             }
             return balloons;
@@ -256,9 +255,9 @@ namespace BloonPop {
         /// <param name="x">Integer of X Location</param>
         /// <param name="y">Integer of Y Location</param>
         /// <returns>Balloon</returns>
-        Balloon CreateBalloon(BalloonColor color, int x, int y){
-            Texture2D sprite = balloonSprites[0]; 
-            switch (color){
+        Balloon CreateBalloon(BalloonColor color, int x, int y) {
+            Texture2D sprite = balloonSprites[0];
+            switch (color) {
                 case BalloonColor.Color1:
                     sprite = balloonSprites[0];
                     break;
@@ -287,17 +286,17 @@ namespace BloonPop {
         /// Provides a balloon in the "next balloon" area
         /// </summary>
         /// <returns>Balloon</returns>
-        private void GetNextBalloon(){
+        private void GetNextBalloon() {
             int idx, x, y;
             BalloonColor nextColor;
             idx = rand.Next(0, lvlBalloons.Count);
-            nextColor = lvlBalloons.ToArray()[idx].BlnColor;
-            if (currentBalloon == null){
-                x = player.BoundingBox.X - balloonDimens.Width/2;
-                y = player.BoundingBox.Y - player.BoundingBox.Height/3;
+            nextColor = lvlBalloons.ToArray() [idx].BlnColor;
+            if (currentBalloon == null) {
+                x = player.BoundingBox.X - balloonDimens.Width / 2;
+                y = player.BoundingBox.Y - player.BoundingBox.Height / 3;
                 currentBalloon = CreateBalloon(nextColor, x, y);
                 idx = rand.Next(0, lvlBalloons.Count);
-                nextColor = lvlBalloons.ToArray()[idx].BlnColor;
+                nextColor = lvlBalloons.ToArray() [idx].BlnColor;
             }
             x = Constants.PLAY_AREA.Right - 5 - balloonDimens.Width;
             y = Constants.PLAY_AREA.Bottom - 5 - balloonDimens.Height;
@@ -309,28 +308,25 @@ namespace BloonPop {
         /// Check if the player won
         /// </summary>
         /// <returns>Boolean</returns>
-        private bool CheckForWin(){
-            if (lvlBalloons.Count == 0)
-                return true;
-            else
-                return false;
+        private bool CheckForWin() {
+            return lvlBalloons.Count == 0;
         }
 
         /// <summary>
         /// Check if player lost
         /// </summary>
         /// <returns>boolean</returns>
-        private bool CheckForLoss(){
+        private bool CheckForLoss() {
             foreach (Balloon bln in lvlBalloons)
                 if (bln.BoundingBox.Bottom >= player.BoundingBox.Top) return true;
-                
+
             return false;
         }
         /// <summary>
         /// Draw the screen
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public void Draw(SpriteBatch spriteBatch){
+        public void Draw(SpriteBatch spriteBatch) {
             spriteBatch.DrawString(font, "Score: " + scoreKeeper.CurrentScore, scoreTextPos, Color.White);
 
             // Draw play area border
@@ -339,7 +335,7 @@ namespace BloonPop {
             // draw each balloon in lvl balloons
             foreach (Balloon balloon in lvlBalloons)
                 balloon.Draw(spriteBatch);
-            
+
             // draw player cannon
             player.Draw(spriteBatch);
 
@@ -352,7 +348,7 @@ namespace BloonPop {
         /// Update the screen
         /// </summary>
         /// <param name="gameTime"></param>
-        public void Update(GameTime gameTime){
+        public void Update(GameTime gameTime) {
 
             // get keyboard state
             KeyboardState kb = Keyboard.GetState();
@@ -362,23 +358,23 @@ namespace BloonPop {
             // Right = angle cannon right
             // Space = fire cannon
             // Z = swap balloon
-            if (kb.IsKeyDown(Keys.Left)){
+            if (kb.IsKeyDown(Keys.Left)) {
                 if (player.Angle > -1)
                     player.Angle -= Constants.PLAYER_ROTATE_AMT;
-            } else if (kb.IsKeyDown(Keys.Right)){
+            } else if (kb.IsKeyDown(Keys.Right)) {
                 if (player.Angle < 1)
                     player.Angle += Constants.PLAYER_ROTATE_AMT;
-            } else if (kb.IsKeyDown(Keys.Space) && !currentBalloon.Moving){
+            } else if (kb.IsKeyDown(Keys.Space) && !currentBalloon.Moving) {
                 currentBalloon.Fire(player.Angle);
-            } else if (kb.IsKeyDown(Keys.Z)){
+            } else if (kb.IsKeyDown(Keys.Z)) {
                 swapBalloonKeyPressed = true;
-            } else if (swapBalloonKeyPressed && kb.IsKeyUp(Keys.Z) && !currentBalloon.Moving){
+            } else if (swapBalloonKeyPressed && kb.IsKeyUp(Keys.Z) && !currentBalloon.Moving) {
                 swapBalloonKeyPressed = false;
                 Balloon temp = currentBalloon;
-                int tempNxtX = (int)nextBalloon.X;
-                int tempNxtY = (int)nextBalloon.Y;
-                int tempCurX = (int)currentBalloon.X;
-                int tempCurY = (int)currentBalloon.Y;
+                int tempNxtX = (int) nextBalloon.X;
+                int tempNxtY = (int) nextBalloon.Y;
+                int tempCurX = (int) currentBalloon.X;
+                int tempCurY = (int) currentBalloon.Y;
                 currentBalloon = nextBalloon;
                 nextBalloon = temp;
                 currentBalloon.X = tempCurX;
@@ -389,7 +385,7 @@ namespace BloonPop {
 
             // update the current balloon and if it's moving, do stuff
             currentBalloon.Update(gameTime);
-            if (currentBalloon.Moving){
+            if (currentBalloon.Moving) {
                 // make sure it doesn't leave the play area
                 currentBalloon.DetectStageCollision();
 
@@ -402,11 +398,11 @@ namespace BloonPop {
                 // 2. set the current balloon to the next balloon,
                 // 3. set the location of the current balloon to the correct one
                 // 4. get the next balloon, update matches, and clean up matches
-                if (!currentBalloon.Moving){
+                if (!currentBalloon.Moving) {
                     lvlBalloons.Add(currentBalloon);
                     currentBalloon = nextBalloon;
-                    currentBalloon.X = player.BoundingBox.X - balloonDimens.Width/2;
-                    currentBalloon.Y = player.BoundingBox.Y - player.BoundingBox.Height/3;
+                    currentBalloon.X = player.BoundingBox.X - balloonDimens.Width / 2;
+                    currentBalloon.Y = player.BoundingBox.Y - player.BoundingBox.Height / 3;
                     UpdateMatches();
                     CleanUpMatches();
                     if (lvlBalloons.Count > 0)
@@ -418,10 +414,10 @@ namespace BloonPop {
             foreach (Balloon bln in lvlBalloons)
                 if (bln.Moving) bln.Update(gameTime);
 
-            if (CheckForWin()){
+            if (CheckForWin()) {
                 scoreKeeper.StopTracking();
                 game.ChangeScreen(GameState.ScoreWin);
-            } else if (CheckForLoss()){
+            } else if (CheckForLoss()) {
                 scoreKeeper.StopTracking();
                 game.ChangeScreen(GameState.ScoreFail);
             }

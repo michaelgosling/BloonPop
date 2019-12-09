@@ -1,15 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
-
-namespace BloonPop
-{
-    public class Game1 : Game
-    {
+namespace BloonPop {
+    public class Game1 : Game {
         /** Fields */
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -23,14 +20,12 @@ namespace BloonPop
         ScoreKeeper scoreKeeper = new ScoreKeeper();
 
         /** Properties */
-        GameState State {get; set;}
-
+        GameState State { get; set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Game1()
-        {
+        public Game1() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -41,8 +36,7 @@ namespace BloonPop
         /// <summary>
         /// Initialize game
         /// </summary>
-        protected override void Initialize()
-        {
+        protected override void Initialize() {
             // Set player pallete and current state
             playerPalette = PlayerPalette.Default;
             State = GameState.Title;
@@ -52,12 +46,11 @@ namespace BloonPop
         /// <summary>
         /// Load game content
         /// </summary>
-        protected override void LoadContent()
-        {
+        protected override void LoadContent() {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+
             // Load textures
-            if (playerPalette != PlayerPalette.Default){
+            if (playerPalette != PlayerPalette.Default) {
                 // Custom Palette code here
             } else {
                 // default palette
@@ -79,7 +72,7 @@ namespace BloonPop
             // create a new 2D Texture, 1x1 pixels, White in color and color as the format.
             // we use this for drawing the border later
             borderBrush = new Texture2D(base.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-            borderBrush.SetData(new[] { Color.White });
+            borderBrush.SetData(new [] { Color.White });
 
             // create player cannon
             playerCannon = new Cannon(playerCannonSprite);
@@ -87,14 +80,13 @@ namespace BloonPop
             // set the current screen to a title screen
             currentScreen = new TitleScreen(this, titleFont, subtitleFont);
         }
-        
+
         /// <summary>
         /// Update game, runs as a loop before draw
         /// </summary>
         /// <param name="gameTime"></param>
-        protected override void Update(GameTime gameTime)
-        {
-            
+        protected override void Update(GameTime gameTime) {
+
             currentScreen.Update(gameTime);
 
             base.Update(gameTime);
@@ -104,8 +96,7 @@ namespace BloonPop
         /// Draw game, runs as a loop after Update
         /// </summary>
         /// <param name="gameTime"></param>
-        protected override void Draw(GameTime gameTime)
-        {
+        protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
@@ -113,7 +104,7 @@ namespace BloonPop
             currentScreen.Draw(spriteBatch);
 
             spriteBatch.End();
-            
+
             base.Draw(gameTime);
         }
 
@@ -121,15 +112,15 @@ namespace BloonPop
         /// Change the games screen based on a given GameState
         /// </summary>
         /// <param name="state">GameState</param>
-        public void ChangeScreen(GameState state){
+        public void ChangeScreen(GameState state) {
             this.State = state;
-            if (this.State == GameState.Title){
+            if (this.State == GameState.Title) {
                 currentScreen = new TitleScreen(this, titleFont, subtitleFont);
-            } else if (this.State == GameState.Playing){
-                currentScreen = new Stage(Level.First, balloonSprites, borderBrush, scoreFont, scoreKeeper, playerCannon,this);
-            } else if (this.State == GameState.ScoreWin){
-                currentScreen = new ScoreScreen(true, scoreKeeper,titleFont, scoreFont, this);
-            } else if (this.State == GameState.ScoreFail){
+            } else if (this.State == GameState.Playing) {
+                currentScreen = new Stage(Level.First, balloonSprites, borderBrush, scoreFont, scoreKeeper, playerCannon, this);
+            } else if (this.State == GameState.ScoreWin) {
+                currentScreen = new ScoreScreen(true, scoreKeeper, titleFont, scoreFont, this);
+            } else if (this.State == GameState.ScoreFail) {
                 currentScreen = new ScoreScreen(false, scoreKeeper, titleFont, scoreFont, this);
             }
         }

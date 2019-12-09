@@ -5,20 +5,20 @@ namespace BloonPop {
         private bool tracking;
 
         /** Properties */
-        public List<int> HighScores {get; private set;}
-        public int CurrentScore {get; private set;}
+        public List<int> HighScores { get; private set; }
+        public int CurrentScore { get; private set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public ScoreKeeper(){
+        public ScoreKeeper() {
             HighScores = new List<int>();
         }
 
         /// <summary>
         /// Start tracking the score
         /// </summary>
-        public void StartTracking(){
+        public void StartTracking() {
             CurrentScore = 0;
             tracking = true;
         }
@@ -28,10 +28,10 @@ namespace BloonPop {
         /// </summary>
         /// <param name="numMatched"></param>
         /// <returns></returns>
-        public int IncrementScore(int numMatched){
-            if (tracking && numMatched >= 3){
+        public int IncrementScore(int numMatched) {
+            if (tracking && numMatched >= 3) {
                 if (numMatched > 6) numMatched = 6;
-                switch (numMatched){
+                switch (numMatched) {
                     case 4:
                         CurrentScore += 150;
                         break;
@@ -52,7 +52,7 @@ namespace BloonPop {
         /// <summary>
         /// Stop Tracking the score and add the score to high scores
         /// </summary>
-        public void StopTracking(){
+        public void StopTracking() {
             tracking = false;
             HighScores.Add(CurrentScore);
         }
