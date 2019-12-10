@@ -1,0 +1,5 @@
+# Build directories
+obj/
+bin/
+**/bin/
+**/obj/
