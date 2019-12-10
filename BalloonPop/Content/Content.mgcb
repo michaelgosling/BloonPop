@@ -37,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/balloons/green_balloon.png
 
+#begin sprites/balloons/programmer_art/green_hexagon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,220,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/balloons/green_balloon.png
+
 #begin sprites/balloons/orange_balloon.png
 /importer:TextureImporter
 /processor:TextureProcessor
