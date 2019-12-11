@@ -50,7 +50,7 @@ namespace BalloonPop {
     public bool IsExiting { get; protected set; } = false;
     public bool IsActive { get { return !otherScreenHasFocus && (ScreenState == ScreenState.TransitionOn || ScreenState == ScreenState.Active); } }
     bool otherScreenHasFocus;
-    public ScreenManager ScreenManager { get; protected set; }
+    public ScreenManager ScreenManager { get; internal set; }
     #endregion
 
     #region Initialization

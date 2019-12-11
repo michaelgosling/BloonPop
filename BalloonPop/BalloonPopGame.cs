@@ -6,31 +6,43 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace BalloonPop {
-  public class GameCore : Game {
+  public class BalloonPopGame : Game {
     /** Fields */
     GraphicsDeviceManager graphics;
+    ScreenManager screenManager;
     SpriteBatch spriteBatch;
     SpriteFont scoreFont, titleFont, subtitleFont;
-    Color bgColor;
+    static Color bgColor = new Color(47, 49, 54);
 
     /// <summary>
     /// Constructor
     /// </summary>
-    public GameCore() {
+    public BalloonPopGame() {
+      // Initialize Graphics Device Manager
       graphics = new GraphicsDeviceManager(this);
-      Content.RootDirectory = "Content";
+
+      // Set the mouse to visible and the the width/height of the window
       IsMouseVisible = true;
       graphics.PreferredBackBufferHeight = Globals.WINDOW_HEIGHT;
       graphics.PreferredBackBufferWidth = Globals.WINDOW_WIDTH;
-      bgColor = new Color(47, 49, 54);
+
+      // Set content directory
+      Content.RootDirectory = "Content";
+
+      // Initialize Screen Manager
+      screenManager = new ScreenManager(this);
+      Components.Add(screenManager);
     }
 
     /// <summary>
     /// Initialize game
     /// </summary>
     protected override void Initialize() {
-
       base.Initialize();
+
+      // Load initial screens
+      screenManager.AddScreen(/* new BackgroundScreen() */ null);
+      screenManager.AddScreen(/* new MainMenuScreen() */ null);
     }
 
     /// <summary>
